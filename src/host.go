@@ -17,7 +17,7 @@ type Host struct {
 func (h Host) manage(wg *sync.WaitGroup) {
 
 	for h.data.meal_amount == 0 || h.philos_done < h.data.philo_amount {
-		if h.philos_eating < 2 {
+		if h.philos_eating < h.data.philo_amount-1 {
 			select {
 			case philo_num := <-h.ask: //allow the philo to eat if they are asking
 				if int(time.Now().UnixMilli()-h.data.philos[philo_num].last_meal) > h.data.die_time {

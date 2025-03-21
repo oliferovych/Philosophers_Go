@@ -27,9 +27,9 @@ func (p *Philo) eat(ask chan int) {
 	p.rightCS.Lock()
 
 	print_action("is eating", p.data, p.num)
-	time.Sleep(time.Duration(p.data.eat_time) * time.Millisecond) // eat for the specified time
 	p.last_meal = time.Now().UnixMilli()
 	p.meals++
+	time.Sleep(time.Duration(p.data.eat_time) * time.Millisecond) // eat for the specified time
 
 	p.rightCS.Unlock()
 	p.leftCS.Unlock()
@@ -47,6 +47,9 @@ func (p *Philo) think() {
 }
 
 func (p *Philo) routine(ask chan int) {
+	if p.num%2 == 0 {
+		time.Sleep(100 * time.Millisecond)
+	}
 	p.last_meal = time.Now().UnixMilli()
 	for p.data.meal_amount == 0 || p.meals < p.data.meal_amount {
 		p.think()
