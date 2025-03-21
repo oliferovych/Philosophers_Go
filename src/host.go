@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 type Host struct {
@@ -19,12 +20,18 @@ func (h Host) manage(wg *sync.WaitGroup) {
 		if h.philos_eating < 2 {
 			select {
 			case philo_num := <-h.ask: //allow the philo to eat if they are asking
+				if int(time.Now().UnixMilli()-h.data.philos[philo_num].last_meal) > h.data.die_time {
+					fmt.Println(time.Now().UnixMilli()-h.data.philos[philo_num].last_meal, h.data.die_time)
+					fmt.Println("Host: philosopher", philo_num, "has died")
+					wg.Done()
+					return
+				}
 				h.philos_eating++
 				h.resp[philo_num] <- 1
 			default:
 			}
 		}
-		for i := 0; i < amount; i++ {
+		for i := 0; i < h.data.philo_amount; i++ {
 			select {
 			case response := <-h.resp[i]:
 				if response == 3 { // if the philo has finished all the meals

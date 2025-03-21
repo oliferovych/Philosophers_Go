@@ -51,7 +51,8 @@ func (d *Data) init_data() bool {
 	for i := 0; i < d.philo_amount; i++ { // initialize the philos
 		d.philos = append(d.philos,
 			&Philo{leftCS: d.sticks[i], rightCS: d.sticks[(i+1)%d.philo_amount],
-				num: i, data: *d})
+				num: i, data: d})
 	}
+	d.start_time = time.Now().UnixMilli()
 	return true
 }

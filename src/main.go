@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"sync"
-	"time"
 )
 
 // func main() {
@@ -48,5 +46,16 @@ func main() {
 		philos_eating: 0,
 		data:          &data,
 	}
-	data.start_time = time.Now().UnixMilli()
+	for i := 0; i < data.philo_amount; i++ {
+		host.resp[i] = make(chan int)
+		data.philos[i].host_talk = host.resp[i]
+	}
+	for i := 0; i < data.philo_amount; i++ {
+		go data.philos[i].routine(host.ask)
+	}
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go host.manage(&wg)
+	wg.Wait()
+	fmt.Println("All philosophers have finished eating")
 }
